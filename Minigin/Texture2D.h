@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TEXTURE2D_H
+#define TEXTURE2D_H
 #include <vec2.hpp>
 #include <string>
 
@@ -11,12 +12,12 @@ namespace dae
 	class Texture2D final
 	{
 	public:
-		SDL_Texture* GetSDLTexture() const;
+		SDL_Texture* getSDLTexture() const;
 		explicit Texture2D(SDL_Texture* texture);
 		explicit Texture2D(const std::string& fullPath);
 		~Texture2D();
 
-		glm::ivec2 GetSize() const;
+		glm::ivec2 getSize() const;
 
 		Texture2D(const Texture2D &) = delete;
 		Texture2D(Texture2D &&) = delete;
@@ -26,3 +27,4 @@ namespace dae
 		SDL_Texture* m_texture;
 	};
 }
+#endif

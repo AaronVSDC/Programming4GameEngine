@@ -1,11 +1,13 @@
-#pragma once
+#ifndef SINGLETON_H
+#define SINGLETON_H
+
 namespace dae
 {
 	template <typename T>
 	class Singleton
 	{
 	public:
-		static T& GetInstance()
+		static T& getInstance()
 		{
 			static T instance{};
 			return instance;
@@ -21,3 +23,4 @@ namespace dae
 		Singleton() = default;
 	};
 }
+#endif

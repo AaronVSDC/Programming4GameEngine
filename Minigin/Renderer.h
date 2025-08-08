@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RENDERER_H 
+#define RENDERER_H 
 #include <SDL.h>
 #include "Singleton.h"
 
@@ -14,17 +15,18 @@ namespace dae
 		SDL_Window* m_window{};
 		SDL_Color m_clearColor{};	
 	public:
-		void Init(SDL_Window* window);
-		void Render() const;
-		void Destroy();
+		void init(SDL_Window* window);
+		void render() const;
+		void destroy();
 
-		void RenderTexture(const Texture2D& texture, float x, float y) const;
-		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
+		void renderTexture(const Texture2D& texture, float x, float y) const;
+		void renderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
 
-		SDL_Renderer* GetSDLRenderer() const;
+		SDL_Renderer* getSDLRenderer() const;
 
-		const SDL_Color& GetBackgroundColor() const { return m_clearColor; }
-		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
+		const SDL_Color& getBackgroundColor() const { return m_clearColor; }
+		void setBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
 	};
 }
 
+#endif

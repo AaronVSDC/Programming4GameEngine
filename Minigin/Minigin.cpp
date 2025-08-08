@@ -5,6 +5,12 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "Minigin.h"
+
+#include <iostream>
+#include <ctime>
+#include <thread>
+
+
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
@@ -62,32 +68,54 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance().Init(g_window);
-	ResourceManager::GetInstance().Init(dataPath);
+	Renderer::getInstance().init(g_window);
+	ResourceManager::getInstance().init(dataPath);
 }
 
 dae::Minigin::~Minigin()
 {
-	Renderer::GetInstance().Destroy();
+	Renderer::getInstance().destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
 	SDL_Quit();
 }
 
-void dae::Minigin::Run(const std::function<void()>& load)
+void dae::Minigin::run(const std::function<void()>& load)
 {
 	load();
 
-	auto& renderer = Renderer::GetInstance();
-	auto& sceneManager = SceneManager::GetInstance();
-	auto& input = InputManager::GetInstance();
+	const int desiredFPS{ 60 };
+	const int frameTimeMs{ 1000 / desiredFPS };
 
-	// todo: this update loop could use some work.
+	auto& renderer = Renderer::getInstance();
+	auto& sceneManager = SceneManager::getInstance();
+	auto& input = InputManager::getInstance();
+
+	const float fixedTimeStep{ 0.02f }; 
+
 	bool doContinue = true;
+	auto lastTime = std::chrono::high_resolution_clock::now();
+	float lag = 0.0f;
 	while (doContinue)
 	{
-		doContinue = input.ProcessInput();
-		sceneManager.Update();
-		renderer.Render();
+		const auto currentTime = std::chrono::high_resolution_clock::now();
+		const float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
+		lastTime = currentTime;
+		lag += deltaTime;
+
+		doContinue = input.processInput();
+
+		while (lag >= fixedTimeStep)
+		{
+			sceneManager.fixedUpdate(fixedTimeStep);
+			lag -= fixedTimeStep;
+		}
+		sceneManager.update(deltaTime);
+
+		renderer.render();
+		std::cout << "lag: " << lag << "dt: " << deltaTime << std::endl; 
+
+		const auto sleepTime = currentTime + std::chrono::milliseconds(frameTimeMs) - std::chrono::high_resolution_clock::now();
+		std::this_thread::sleep_for(sleepTime); 
 	}
 }

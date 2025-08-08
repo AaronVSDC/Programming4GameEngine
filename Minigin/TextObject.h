@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TEXTOBJECT_H
+#define TEXTOBJECT_H
 #include <string>
 #include <memory>
 #include "GameObject.h"
@@ -11,13 +12,13 @@ namespace dae
 	class TextObject final : public GameObject
 	{
 	public:
-		void Update() override;
-		void Render() const override;
+		void update(float deltaTime) override;
+		void render() const override;
 
-		void SetText(const std::string& text);
-		void SetPosition(float x, float y);
+		void setText(const std::string& text);
+		void setPosition(float x, float y);
 
-		TextObject(const std::string& text, std::shared_ptr<Font> font);
+		TextObject(const std::string& text, Font* font);
 		virtual ~TextObject() = default;
 		TextObject(const TextObject& other) = delete;
 		TextObject(TextObject&& other) = delete;
@@ -27,7 +28,8 @@ namespace dae
 		bool m_needsUpdate;
 		std::string m_text;
 		Transform m_transform{};
-		std::shared_ptr<Font> m_font;
-		std::shared_ptr<Texture2D> m_textTexture;
+		Font* m_font;
+		std::unique_ptr<Texture2D> m_textTexture;
 	};
 }
+#endif

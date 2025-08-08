@@ -1,19 +1,24 @@
-#pragma once
-#include "SceneManager.h"
+#ifndef SCENE_H
+#define SCENE_H
+#include <memory>
+#include <vector>
+
+#include "GameObject.h"
 
 namespace dae
 {
-	class GameObject;
+	class SceneManager; 
 	class Scene final
 	{
-		friend Scene& SceneManager::CreateScene(const std::string& name);
+		friend class SceneManager;
 	public:
-		void Add(std::shared_ptr<GameObject> object);
-		void Remove(std::shared_ptr<GameObject> object);
-		void RemoveAll();
+		void add(std::unique_ptr<GameObject> object);
+		void remove(std::unique_ptr<GameObject> object);
+		void removeAll();
 
-		void Update();
-		void Render() const;
+		void update(float deltaTime);
+		void fixedUpdate(float fixedTimeStep); 
+		void render() const;
 
 		~Scene();
 		Scene(const Scene& other) = delete;
@@ -25,9 +30,10 @@ namespace dae
 		explicit Scene(const std::string& name);
 
 		std::string m_name;
-		std::vector < std::shared_ptr<GameObject>> m_objects{};
+		std::vector<std::unique_ptr<GameObject>> m_pObjects{};
 
 		static unsigned int m_idCounter; 
 	};
 
 }
+#endif SCENE_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FONT_H
+#define FONT_H 
 #include <string>
 
 struct _TTF_Font;
@@ -10,7 +11,7 @@ namespace dae
 	class Font final
 	{
 	public:
-		_TTF_Font* GetFont() const;
+		_TTF_Font* getFont() const;
 		explicit Font(const std::string& fullPath, unsigned int size);
 		~Font();
 
@@ -22,3 +23,5 @@ namespace dae
 		_TTF_Font* m_font;
 	};
 }
+
+#endif

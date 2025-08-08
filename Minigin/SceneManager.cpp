@@ -1,25 +1,34 @@
 #include "SceneManager.h"
+
+#include "Minigin.h"
 #include "Scene.h"
 
-void dae::SceneManager::Update()
+void dae::SceneManager::update(float deltaTime)
 {
-	for(auto& scene : m_scenes)
+	for(auto& scene : m_pScenes)
 	{
-		scene->Update();
+		scene->update(deltaTime);
 	}
 }
 
-void dae::SceneManager::Render()
+void dae::SceneManager::fixedUpdate(float fixedTimeStep)
 {
-	for (const auto& scene : m_scenes)
+	for (auto& scene : m_pScenes)
 	{
-		scene->Render();
+		scene->fixedUpdate(fixedTimeStep);
 	}
 }
 
-dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
+void dae::SceneManager::render() const
 {
-	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
-	m_scenes.push_back(scene);
-	return *scene;
+	for (const auto& scene : m_pScenes)
+	{
+		scene->render();
+	}
+}
+
+dae::Scene* dae::SceneManager::createScene(const std::string& name)
+{
+	m_pScenes.push_back(std::unique_ptr<Scene>(new Scene(name)));
+	return m_pScenes.back().get();
 }

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MINIGEN_H
+#define MINIGIN_H 
 #include <string>
 #include <functional>
 #include <filesystem>
@@ -10,7 +11,7 @@ namespace dae
 	public:
 		explicit Minigin(const std::filesystem::path& dataPath);
 		~Minigin();
-		void Run(const std::function<void()>& load);
+		void run(const std::function<void()>& load);
 
 		Minigin(const Minigin& other) = delete;
 		Minigin(Minigin&& other) = delete;
@@ -18,3 +19,5 @@ namespace dae
 		Minigin& operator=(Minigin&& other) = delete;
 	};
 }
+
+#endif
